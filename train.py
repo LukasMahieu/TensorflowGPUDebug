@@ -53,7 +53,7 @@ def train_multi_gpu(batch_size, epochs):
 
     # Create a synthetic dataset
     train_dataset = tf.data.Dataset.from_generator(
-        lambda: generate_synthetic_data(global_batch_size, 10000),
+        lambda: generate_synthetic_data(global_batch_size, 500),
         output_signature=(
             tf.TensorSpec(shape=(global_batch_size, 128, 128, 3), dtype=tf.float32),
             tf.TensorSpec(shape=(global_batch_size,), dtype=tf.int32)
@@ -62,9 +62,10 @@ def train_multi_gpu(batch_size, epochs):
 
     with strategy.scope():
         model = create_model()
-        model.compile(optimizer='adam', loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True))
+        model.compile(optimizer='adam', loss=tf.keras.losses.SparseCategoricalCrossentropy())
 
-    model.fit(train_dataset, epochs=epochs, steps_per_epoch=10000)
+    model.fit(train_dataset, epochs=epochs, steps_per_epoch=500)
+
 
 if __name__ == "__main__":
-    train_multi_gpu(batch_size=64, epochs=10)
+    train_multi_gpu(batch_size=64, epochs=100)
