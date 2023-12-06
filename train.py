@@ -58,7 +58,7 @@ def train_multi_gpu(batch_size, epochs):
             tf.TensorSpec(shape=(global_batch_size, 128, 128, 3), dtype=tf.float32),
             tf.TensorSpec(shape=(global_batch_size,), dtype=tf.int32)
         )
-    )
+    ).repeat()
 
     with strategy.scope():
         model = create_model()
