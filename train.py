@@ -40,13 +40,13 @@ def generate_synthetic_data(batch_size, num_batches):
 def train_multi_gpu(batch_size, epochs):
     """Train the model using multiple GPUs."""
     # Detect and initialize GPUs
-    gpus = tf.config.experimental.list_physical_devices('GPU')
-    if gpus:
-        try:
-            for gpu in gpus:
-                tf.config.experimental.set_memory_growth(gpu, True)
-        except RuntimeError as e:
-            print(e)
+    gpus_found = tf.config.list_physical_devices("GPU")
+
+    strategy = tf.distribute.MirroredStrategy()
+    print("Number of replica devices in use: {}".format(strategy.num_replicas_in_sync))
+    print("Number of GPUs available: {}".format(len(gpus_found)))
+
+    assert len(gpus_found) >= 1, "Training requires at least 1 GPU"
 
     strategy = tf.distribute.MirroredStrategy()
     global_batch_size = batch_size * strategy.num_replicas_in_sync
